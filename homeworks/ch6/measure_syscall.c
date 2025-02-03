@@ -21,10 +21,9 @@ main(int argc, char **argv)
   long long start_mill = start.tv_usec * 0.001;
 
   for (int i = 0; i < SYSCALL_N; i++) {
-    getpid();
- //   if (read(fd, NULL, 0) == -1) {
- //     perror("read: ");
- //   }
+    if (read(fd, NULL, 0) == -1) {
+      perror("read: ");
+    }
   }
 
   struct timeval end = { 0, 0 };
@@ -34,6 +33,6 @@ main(int argc, char **argv)
 
   long long end_mill = end.tv_usec * 0.001;
 
-  printf("total duration: %8lu (sec) %8llu (mill) %8lu (micr)\n", end.tv_sec - start.tv_sec, end_mill - start_mill ,end.tv_usec - start.tv_usec);
-//  printf("syscall duration: %8lu (sec) %8llu (mill) %8lu (micr)\n", end.tv_sec - start.tv_sec, end_mill - start_mill ,end.tv_usec - start.tv_usec);
+  printf("total duration: %8lu (sec) %8llu (mill) %8lu (micr)\n", end.tv_sec, end_mill - start_mill ,end.tv_usec);
+  printf("syscall duration: %8lu (sec) %8llu (mill) %8lu (micr)\n", (end.tv_sec - start.tv_sec) / SYSCALL_N, (end_mill - start_mill) / SYSCALL_N ,(end.tv_usec - start.tv_usec) / SYSCALL_N);
 }
