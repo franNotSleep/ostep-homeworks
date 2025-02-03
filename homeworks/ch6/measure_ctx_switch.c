@@ -46,6 +46,6 @@ main(int argc, char **argv)
     }
     gettimeofday(&end, NULL);
 
-    printf("ctx switch in microseconds: %f\n", (1000000 * end.tv_sec + end.tv_usec - 1000000 * start.tv_sec - start.tv_usec) / (float)MAX_ITER);
+    printf("ctx switch in microseconds: %f\n", ((1000000 * end.tv_sec + end.tv_usec) - (1000000 * start.tv_sec + start.tv_usec)) / (float)MAX_ITER);
   }
 }
