@@ -3,34 +3,40 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-struct JSArray {
+struct Vector {
   size_t len;
   size_t cap;
   void **data;
 };
 
-struct JSArray *init() {
-  struct JSArray *arr = (struct JSArray*)malloc(sizeof(struct JSArray));
+struct Vector *init(size_t init_cap) {
+  struct Vector *arr = (struct Vector*)malloc(sizeof(struct Vector));
+  arr->len = 0;
   assert(arr != NULL);
-  void **data = malloc(sizeof(void *));
-  assert(data != NULL);
-  arr->data = data;
+
+  arr->cap = init_cap;
+  arr->data = (void **)malloc(sizeof(void *) * init_cap);
   return arr;
 }
 
-void clear(struct JSArray *arr) {
+void clear(struct Vector *arr) {
   free(arr->data);
   free(arr);
 }
 
-void increase(struct JSArray *arr) {
+void increase(struct Vector *arr) {
   size_t new_cap = (arr->cap + 1) * 2;
-  void *ptr = realloc(arr->data, new_cap);
+  void **ptr = (void **)realloc(arr->data, new_cap * sizeof(void *));
+
+  if (ptr == NULL) {
+    perror("realloc: ");
+    exit(1);
+  }
   arr->data = ptr;
   arr->cap = new_cap;
 }
 
-void *pop(struct JSArray *arr) {
+void *pop(struct Vector *arr) {
   size_t indx = arr->len - 1;
   arr->len--;
   void *v = arr->data[indx];
@@ -39,7 +45,7 @@ void *pop(struct JSArray *arr) {
 }
 
 
-void push(struct JSArray *arr, void *new_value) {
+void push(struct Vector *arr, void *new_value) {
   if (arr->cap == arr->len) {
     increase(arr);   
   }
@@ -52,7 +58,7 @@ int
 main(int argc, char **argv) 
 {
 
-  struct JSArray *arr = init();
+  struct Vector *arr = init(3);
 
   int v1 = 1;
   char v2 = 'c';
@@ -86,4 +92,5 @@ main(int argc, char **argv)
   pop(arr);
 
   printf("len: %4lu \ncap: %4lu\n", arr->len, arr->cap);
+  clear(arr);
 }
